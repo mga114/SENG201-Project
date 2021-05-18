@@ -3,8 +3,9 @@ package main;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -13,7 +14,7 @@ import java.util.TimerTask;
 
 import javax.swing.JPanel;
 
-public class GameLogic extends JPanel implements MouseListener, MouseMotionListener{
+public class GameLogic extends JPanel implements MouseListener, MouseMotionListener, KeyListener{
 	public State state;
 	private int currIsland;
 	private int targetIsland;
@@ -23,8 +24,13 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	private Image shipImage = t.getImage("images/player.png");
 	private Ship ship = new Ship(170, 460);
 	private boolean moved = false;
-	private boolean paused = false;
+	private static boolean paused = false;
 	private boolean timerStart = false;
+	private EventHandler eventHandler = new EventHandler();
+	private int globalTime = 5000;
+	private Image dayCounter1;
+	private Image dayCounter2;
+	//private static 
 	
 	
 	
@@ -32,6 +38,8 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 		state = State.MAP;
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		addKeyListener(this);
+		timeChanged();
 		currIsland = 0;
 		targetIsland = -1;
 		//setFocusable(true);
@@ -46,20 +54,19 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			g.drawImage(background, 0, 0, this);
 			g.drawImage(currentDrawPath, 0, 0, this);
 			g.drawImage(shipImage, ship.x, ship.y, this);
+			Image n = t.getImage("images/daysremaining.png");
+			g.drawImage(n, 900, 20, this);
+			g.drawImage(dayCounter1, 1190, 30, this);
+			g.drawImage(dayCounter2, 1220, 30, this);
 			g.dispose();
 			break;
 		}
+		
 	}
 	@Override
 	public void mouseClicked(MouseEvent m) {
 		if(m.getButton() == MouseEvent.BUTTON3) {
-			if (paused) {
-				paused = false;
-			}else {
-				paused = true;
-			}
-		}else {
-			System.out.println("x="+m.getX()+" y="+m.getY());
+			state = State.MAP;
 		}
 	}
 
@@ -74,6 +81,15 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 		int mouseX = m.getX();
 		int mouseY = m.getY();
 		//System.out.println(mouseX + " " + mouseY);
+		switch (state) {
+		case MAP:
+			mouseClickMapState(mouseX, mouseY);
+			break;
+		}
+	}
+	
+	
+	public void mouseClickMapState(int mouseX, int mouseY) {
 		if (data.getIslandButton0().pressed(mouseX, mouseY)) {
 			if (targetIsland != currIsland) {
 				moved = true;
@@ -90,34 +106,41 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 				currIsland = 2;
 			}
 		}
-		
+		moveShip(data.getPathDataX01(), data.getPathDataY01());
+		repaint();
+	}
+	
+	public void moveShip(int[] pathDataX, int[] pathDataY) {
 		if (moved && !timerStart) {
 			timerStart = true;
 			Timer timer = new Timer();
 			timer.schedule(new TimerTask() {
-				int[] pathDataX = data.getPathDataX01();
-				int[] pathDataY = data.getPathDataY01();
 				int i = 0;
 			    @Override
 			    public void run() {
-			    	System.out.println(i);
 			        if (!paused) {
+			        	eventHandler.generateRandomEvent(50);
 			        	ship.x += pathDataX[i];
 				        ship.y += pathDataY[i];
 			        	i += 1;
+			        	if (i % 5 == 0) {
+			        		globalTime -= 1;
+			        		timeChanged();
+			        	}
+			        	//System.out.println(globalTime);
 			        }
 			        if (i >= pathDataX.length) {
 			        	timer.cancel();
 			        	moved = false;
 			        	timerStart = false;
 						handleMouseMoveEmpty();
+						state = State.SHOP;
 			        }
 			        repaint();
 			    }
 	
 			}, 10, 10);
 		}
-		repaint();
 	}
 
 	@Override
@@ -131,16 +154,20 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 		int mouseX = m.getX();
 		int mouseY = m.getY();
 		//System.out.println(mouseX + " " + mouseY);
-		if (data.getIslandButton0().pressed(mouseX, mouseY)) {
-			mouseOverIsland0();
-		}else if (data.getIslandButton1().pressed(mouseX, mouseY)) {
-			mouseOverIsland1();
-		}else if (data.getIslandButton2().pressed(mouseX, mouseY)) {
-			mouseOverIsland2();
-		}else {
-			handleMouseMoveEmpty();
+		switch (state) {
+		case MAP:
+			if (data.getIslandButton0().pressed(mouseX, mouseY)) {
+				mouseOverIsland0();
+			}else if (data.getIslandButton1().pressed(mouseX, mouseY)) {
+				mouseOverIsland1();
+			}else if (data.getIslandButton2().pressed(mouseX, mouseY)) {
+				mouseOverIsland2();
+			}else {
+				handleMouseMoveEmpty();
+			}
+			repaint();
+			break;
 		}
-		repaint();
 	}
 	
 	public void handleMouseMoveEmpty() {
@@ -183,4 +210,37 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 		}
 	}
 	
+	public void timeChanged() {
+		int daysLeft = (int) Math.ceil(globalTime / 100);
+		int day1 = daysLeft % 10;
+		int day2 = (int) Math.floor(daysLeft / 10);
+		dayCounter1 = t.getImage("images/text/" + Integer.toString(day2) + ".png");
+		dayCounter2 = t.getImage("images/text/" + Integer.toString(day1) + ".png");
+	}
+	
+	public static void setPaused(boolean pausedVal) {
+		paused = pausedVal;
+	}
+	
+	public static boolean getPaused() {
+		return paused;
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		System.out.println(e.getKeyCode());
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

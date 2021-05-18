@@ -1,9 +1,12 @@
 package main;
 
+
 import javax.swing.JFrame;
+import javax.swing.JSlider;
 
 public class Main {
-	public static GameLogic logic = new GameLogic();
+	private  static GameLogic logic = new GameLogic();
+	
 	
 	public static void main(String[] args) {
 		JFrame window = new JFrame();

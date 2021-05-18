@@ -17,4 +17,5 @@ public class Button {
 	public boolean pressed(int mouseX, int mouseY) {
 		return (mouseX > minX && mouseX < maxX && mouseY > minY && mouseY < maxY);
 	}
+	
 }

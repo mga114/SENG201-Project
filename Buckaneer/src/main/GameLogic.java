@@ -19,8 +19,8 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	private int currIsland;
 	private int targetIsland;
 	private Toolkit t = Toolkit.getDefaultToolkit();
-	private GameData data = new GameData();
-	private Image currentDrawPath = data.getEmpty();
+	private static GameData data = new GameData();
+	private Image currentDrawPath = GameData.getEmpty();
 	private Image shipImage = t.getImage("images/player.png");
 	private Ship ship = new Ship(170, 460);
 	private boolean moved = false;
@@ -30,7 +30,8 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	private int globalTime = 5000;
 	private Image dayCounter1;
 	private Image dayCounter2;
-	//private static 
+	private static char currentChar;
+	private static Image eventImage = GameData.getEmpty();
 	
 	
 	
@@ -39,6 +40,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addKeyListener(this);
+		setFocusable(true);
 		timeChanged();
 		currIsland = 0;
 		targetIsland = -1;
@@ -58,6 +60,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			g.drawImage(n, 900, 20, this);
 			g.drawImage(dayCounter1, 1190, 30, this);
 			g.drawImage(dayCounter2, 1220, 30, this);
+			g.drawImage(eventImage, 490, 260, this);
 			g.dispose();
 			break;
 		}
@@ -118,8 +121,9 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 				int i = 0;
 			    @Override
 			    public void run() {
+			    	repaint();
 			        if (!paused) {
-			        	eventHandler.generateRandomEvent(50);
+			        	eventHandler.generateRandomEvent(700);
 			        	ship.x += pathDataX[i];
 				        ship.y += pathDataY[i];
 			        	i += 1;
@@ -127,7 +131,6 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			        		globalTime -= 1;
 			        		timeChanged();
 			        	}
-			        	//System.out.println(globalTime);
 			        }
 			        if (i >= pathDataX.length) {
 			        	timer.cancel();
@@ -173,7 +176,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	public void handleMouseMoveEmpty() {
 		if(!moved) {
 			targetIsland = -1;
-			currentDrawPath = data.getEmpty();
+			currentDrawPath = GameData.getEmpty();
 		}
 	}
 	
@@ -234,13 +237,25 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println(e.getKeyCode());
+		setCurrentChar(e.getKeyChar());
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		repaint();
+	}
+	
+
+	public static char getCurrentChar() {
+		return currentChar;
 	}
 
+	public static void setCurrentChar(char currentChar) {
+		GameLogic.currentChar = currentChar;
+	}
+
+	public static void setEventImage(Image eventImage) {
+		GameLogic.eventImage = eventImage;
+	}
+	
 }

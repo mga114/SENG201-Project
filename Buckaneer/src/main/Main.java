@@ -2,11 +2,10 @@ package main;
 
 
 import javax.swing.JFrame;
-import javax.swing.JSlider;
+import javax.swing.JLabel;
 
 public class Main {
-	private  static GameLogic logic = new GameLogic();
-	
+	private  static GameLogic logic = new GameLogic();	
 	
 	public static void main(String[] args) {
 		JFrame window = new JFrame();

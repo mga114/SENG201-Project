@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,7 +37,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	
 	
 	public GameLogic() {
-		state = State.MAP;
+		state = State.SHOP;
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addKeyListener(this);
@@ -48,11 +49,11 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	}
 	
 	public void paint(Graphics g) {
+		Image background = t.getImage("images/background.png");
 		switch(state) {
 		case MAP:
 			g.setColor(new Color(173, 216, 230));
 			g.fillRect(0, 0, 1280, 720);
-			Image background = t.getImage("images/background.png");
 			g.drawImage(background, 0, 0, this);
 			g.drawImage(currentDrawPath, 0, 0, this);
 			g.drawImage(shipImage, ship.x, ship.y, this);
@@ -61,6 +62,17 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			g.drawImage(dayCounter1, 1190, 30, this);
 			g.drawImage(dayCounter2, 1220, 30, this);
 			g.drawImage(eventImage, 490, 260, this);
+			g.dispose();
+			break;
+		case SHOP:
+			g.setColor(new Color(173, 216, 230));
+			g.fillRect(0, 0, 1280, 720);
+			g.drawImage(background, 0, 0, this);
+			g.drawImage(t.getImage("images/shop.jpg"), 240, 60, this);
+			ArrayList<PriceSprite> priceSprites = getPriceSprites();
+			for (PriceSprite sprite : priceSprites) {
+				g.drawImage(sprite.getImage(), sprite.getX(), sprite.getY(), this);
+			}
 			g.dispose();
 			break;
 		}
@@ -258,4 +270,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 		GameLogic.eventImage = eventImage;
 	}
 	
+	public ArrayList<PriceSprite> getPriceSprites(){
+		return PriceSprite.constructInventoryPrice();
+	}
 }

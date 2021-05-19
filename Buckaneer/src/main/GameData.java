@@ -21,6 +21,7 @@ public class GameData {
 	private static Image pirateEventMessage3 = t.getImage("images/piratemessage3.jpg");
 	private static Image weatherEventMessage = t.getImage("images/badweather.jpg");
 	private static Image abandonedShipMessage = t.getImage("images/abandondedship.jpg");
+	private static int[] inventoryCount = new int[] { 3, 5, 6, 9, 2, 1, 0 };
 	
 	public Image getPath01() {
 		return path01;
@@ -76,5 +77,17 @@ public class GameData {
 
 	public static Image getAbandonedShipMessage() {
 		return abandonedShipMessage;
+	}
+
+	public static int[] getInventoryCount() {
+		return inventoryCount;
+	}
+	
+	public static int getInventoryCount(int pos) {
+		return inventoryCount[pos];
+	}
+
+	public static void setInventoryCount(int newAmount, int pos) {
+		GameData.inventoryCount[pos] = newAmount;
 	}
 }

@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 public class GameLogic extends JPanel implements MouseListener, MouseMotionListener, KeyListener{
 	public State state;
-	private int currIsland;
+	private static int currIsland;
 	private int targetIsland;
 	private Toolkit t = Toolkit.getDefaultToolkit();
 	private static GameData data = new GameData();
@@ -38,8 +38,12 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	
 	public GameLogic() {
 		state = State.SHOP;
+		GameData.setPrices();
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		//
+		Ship.setRepairPrice();
+		//
 		addKeyListener(this);
 		setFocusable(true);
 		timeChanged();
@@ -68,11 +72,12 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			g.setColor(new Color(173, 216, 230));
 			g.fillRect(0, 0, 1280, 720);
 			g.drawImage(background, 0, 0, this);
-			g.drawImage(t.getImage("images/shop.jpg"), 240, 60, this);
+			g.drawImage(t.getImage("images/shop (2).jpg"), 240, 60, this);
 			ArrayList<PriceSprite> priceSprites = getPriceSprites();
 			for (PriceSprite sprite : priceSprites) {
 				g.drawImage(sprite.getImage(), sprite.getX(), sprite.getY(), this);
 			}
+			g.drawImage(eventImage, 490, 260, this);
 			g.dispose();
 			break;
 		}
@@ -101,7 +106,11 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			mouseClickMapState(mouseX, mouseY);
 			break;
 		case SHOP:
+			if (eventImage == GameData.getEmpty()) {
 			mouseClickShopState(mouseX, mouseY);
+			}else {
+				eventImage = GameData.getEmpty();
+			}
 			repaint();
 			break;
 		}
@@ -118,7 +127,18 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 						buttonNumClicked = i;
 					}
 				}
-				Ship.handlePurchase(buttonNumClicked);
+				if (buttonNumClicked != -1) {
+					Ship.handleSelling(buttonNumClicked);
+				}
+			}else if (mouseX > 564 && mouseX < 633) {
+				for (int i=0; i < 7; i++) {
+					if(mouseY > (253 + i * 53) && mouseY < (288 + i * 53)) {
+						buttonNumClicked = i;
+					}
+				}
+				if (buttonNumClicked != -1) {
+					Ship.handlePurchase(buttonNumClicked);
+				}
 			}
 		}
 	}
@@ -168,6 +188,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			        	moved = false;
 			        	timerStart = false;
 						handleMouseMoveEmpty();
+						Ship.setRepairPrice();
 						state = State.SHOP;
 			        }
 			        repaint();
@@ -199,9 +220,9 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			}else {
 				handleMouseMoveEmpty();
 			}
-			repaint();
 			break;
 		}
+		repaint();
 	}
 	
 	public void handleMouseMoveEmpty() {
@@ -290,6 +311,10 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	}
 	
 	public ArrayList<PriceSprite> getPriceSprites(){
-		return PriceSprite.constructInventoryPrice();
+		return PriceSprite.constructShopText();
+	}
+	
+	public static int getCurrentIsland() {
+		return currIsland;
 	}
 }

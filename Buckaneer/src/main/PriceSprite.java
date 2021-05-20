@@ -115,6 +115,34 @@ public class PriceSprite {
 		return returning;
 	}
 	
+	public static ArrayList<PriceSprite> constructPriceInfoText(){
+		ArrayList<PriceSprite> returning = new ArrayList<PriceSprite>();
+		Image tempSprite;
+		for (int i=0; i < 5; i++) {
+			for (int j=0; j < 7; j++) {
+				
+				int price = GameData.getBuyPrice(i, j);
+				tempSprite = t.getImage("images/text/k" + Integer.toString((int) Math.floor(price / (100))) + ".png");
+				returning.add(new PriceSprite(tempSprite, 440 + (85 * j), 220 + (65 * i)));
+				int midPrice = (int) Math.floor((price - (Math.floor(price/100) * 100)) / 10);
+				tempSprite = t.getImage("images/text/k" + Integer.toString(midPrice) + ".png");
+				returning.add(new PriceSprite(tempSprite, 448+(85*j), 220 + (65 * i)));
+				tempSprite = t.getImage("images/text/k" + Integer.toString((int) (price % 10)) + ".png");
+				returning.add(new PriceSprite(tempSprite, 456+(85*j), 220 + (65 * i)));
+				//buying
+				price = GameData.getSellPrice(i, j);
+				tempSprite = t.getImage("images/text/k" + Integer.toString((int) Math.floor(price / (100))) + ".png");
+				returning.add(new PriceSprite(tempSprite, 470 + (85*j), 220 + (65 * i)));
+				midPrice = (int) Math.floor((price - (Math.floor(price/100) * 100)) / 10);
+				tempSprite = t.getImage("images/text/k" + Integer.toString(midPrice) + ".png");
+				returning.add(new PriceSprite(tempSprite, 478+(85*j), 220 + (65*i)));
+				tempSprite = t.getImage("images/text/k" + Integer.toString((int) (price % 10)) + ".png");
+				returning.add(new PriceSprite(tempSprite, 486+(85*j), 220 + (65 * i)));
+			}
+		}
+		return returning;
+	}
+	
 	public Image getImage() {
 		return sprite;
 	}

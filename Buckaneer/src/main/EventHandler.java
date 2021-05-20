@@ -31,7 +31,7 @@ public class EventHandler {
 			keyValid = validKey(GameLogic.getCurrentChar());
 		}
 		//RANDOM CHANGE ME PLS DADDY
-		if (random.nextInt(2) == 0) {
+		if (random.nextInt(Ship.getFightingChance()) == 0) {
 			GameLogic.setEventImage(GameData.getPirateEventMessage3());
 		}else if (numberPressed == (randSuccess + 1)){
 			GameLogic.setEventImage(GameData.getPirateEventMessage3());
@@ -43,6 +43,7 @@ public class EventHandler {
 				GameLogic.setEventImage(GameData.getPirateEventMessage2());
 				endEvent();
 				GameLogic.state = State.GAMEOVER;
+				GameLogic.setGameOverImage(GameData.getGameOverPirates());
 			}
 			
 		}

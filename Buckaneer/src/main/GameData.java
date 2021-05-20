@@ -1,9 +1,7 @@
 package main;
 
 import java.awt.Image;
-import java.util.Random;
 import java.awt.Toolkit;
-import java.util.ArrayList;
 
 public class GameData {
 	private static Toolkit t = Toolkit.getDefaultToolkit();
@@ -25,6 +23,9 @@ public class GameData {
 	private static Image repairError = t.getImage("images/repairerror.jpg");
 	private static Image shopButton = t.getImage("images/shopbutton.jpg");
 	private static Image inventoryButton = t.getImage("images/inventory.jpg");
+	private static Image priceInfoButton = t.getImage("images/priceinfobutton.jpg");
+	private static Image gameOverMoney = t.getImage("images/gameovernomoney.png");
+	private static Image gameOverPirates = t.getImage("images/gameoverpirates.png");
 	private static int[][] sellingData;
 	private static int[][] buyingData;
 	
@@ -114,5 +115,17 @@ public class GameData {
 
 	public static Image getInventoryButton() {
 		return inventoryButton;
+	}
+
+	public static Image getPriceInfoButton() {
+		return priceInfoButton;
+	}
+
+	public static Image getGameOverMoney() {
+		return gameOverMoney;
+	}
+
+	public static Image getGameOverPirates() {
+		return gameOverPirates;
 	}
 }

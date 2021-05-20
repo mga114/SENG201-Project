@@ -23,12 +23,13 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	private static GameData data = new GameData();
 	private Image currentDrawPath = GameData.getEmpty();
 	private Image shipImage = t.getImage("images/player.png");
+	private static Image gameOverImage = GameData.getEmpty();
 	private Ship ship = new Ship(170, 460);
 	private boolean moved = false;
 	private static boolean paused = false;
 	private boolean timerStart = false;
 	private EventHandler eventHandler = new EventHandler();
-	private int globalTime = 5000;
+	private int globalTime = 2000;
 	private Image dayCounter1;
 	private Image dayCounter2;
 	private static char currentChar;
@@ -37,8 +38,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	
 	
 	public GameLogic() {
-		state = State.MAP;
-		GameData.setPrices();
+		state = State.MENU;
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		Path.constructPathMatrix();
@@ -54,6 +54,10 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	public void paint(Graphics g) {
 		Image background = t.getImage("images/background.png");
 		switch(state) {
+		case MENU:
+			g.drawImage(t.getImage("images/mainmenu.jpg"), 0, 0, this);
+			g.dispose();
+			break;
 		case MAP:
 			g.setColor(new Color(173, 216, 230));
 			g.fillRect(0, 0, 1280, 720);
@@ -68,6 +72,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			g.drawImage(eventImage, 490, 260, this);
 			g.drawImage(GameData.getInventoryButton(), 1155, 600, this);
 			g.drawImage(GameData.getShopButton(), 1155, 650, this);
+			g.drawImage(GameData.getPriceInfoButton(), 1155, 550, this);
 			g.dispose();
 			break;
 		case SHOP:
@@ -92,6 +97,22 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			for (PriceSprite sprite : invSprites) {
 				g.drawImage(sprite.getImage(), sprite.getX(), sprite.getY(), this);
 			}
+			g.dispose();
+			break;
+		case PRICEINFO:
+			g.setColor(new Color(173, 216, 230));
+			g.fillRect(0, 0, 1280, 720);
+			g.drawImage(background, 0, 0, this);
+			g.drawImage(t.getImage("images/priceinfo.jpg"), 240, 60, this);
+			ArrayList<PriceSprite> pISprites = PriceSprite.constructPriceInfoText();
+			for (PriceSprite sprite : pISprites) {
+				g.drawImage(sprite.getImage(), sprite.getX(), sprite.getY(), this);
+			}
+			g.dispose();
+			break;
+		case GAMEOVER:
+			g.drawImage(t.getImage("images/gameover.jpg"), 0, -20, this);
+			g.drawImage(gameOverImage, 0, 0, this);
 			g.dispose();
 			break;
 		}
@@ -129,6 +150,67 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 				state = State.MAP;
 				repaint();
 			}
+			break;
+		case PRICEINFO:
+			if (mouseX > 754 && mouseX < 1000 && mouseY > 539 && mouseY < 618) {
+				state = State.MAP;
+				repaint();
+			}
+			break;
+		case MENU:
+			handleClickMenuState(mouseX, mouseY);
+			repaint();
+			break;
+		}
+	}
+	
+	public void handleClickMenuState(int mouseX, int mouseY) {
+		if(mouseX > 500 && mouseX < 780 && mouseY > 535 && mouseY < 660) {
+			state = State.MAP;
+			GameData.setPrices();
+		}
+		if (mouseY > 235 && mouseY < 385) {
+			if(mouseX > 93 && mouseX < 340) {
+				Ship.setRepairModifier(0);
+				Ship.setEventChance(2000);
+				Ship.setFightingChance(3);
+				Ship.setSellingModifier(0);
+				GameData.setPrices();
+			}else if (mouseX > 373 && mouseX < 600) {
+				Ship.setRepairModifier(15);
+				Ship.setEventChance(1250);
+				Ship.setFightingChance(3);
+				Ship.setSellingModifier(0);
+				GameData.setPrices();
+			}else if (mouseX > 633 && mouseX < 848) {
+				Ship.setRepairModifier(-10);
+				Ship.setEventChance(2000);
+				Ship.setFightingChance(2);
+				Ship.setSellingModifier(0);
+				GameData.setPrices();
+			}else if (mouseX > 873 && mouseX < 1111) {
+				Ship.setRepairModifier(0);
+				Ship.setEventChance(2000);
+				Ship.setFightingChance(5);
+				Ship.setSellingModifier(0.3);
+				GameData.setPrices();
+			}
+		}
+		if(mouseY > 430 && mouseY < 520) {
+			if(mouseX > 400 && mouseX < 490) {
+				globalTime = 2000;
+				Ship.setSelectedDays(2000);
+			}else if (mouseX > 532 && mouseX < 630) {
+				globalTime = 3000;
+				Ship.setSelectedDays(3000);
+			}else if (mouseX > 660 && mouseX < 750) {
+				globalTime = 4000;
+				Ship.setSelectedDays(4000);
+			}else if (mouseX > 790 && mouseX < 880) {
+				globalTime = 5000;
+				Ship.setSelectedDays(5000);
+			}
+			timeChanged();
 		}
 	}
 	
@@ -188,7 +270,9 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			}
 		}
 		if (mouseX > 1155) {
-			if (mouseY > 600 && mouseY < 650) {
+			if(mouseY > 550 && mouseY<600) {
+				state = State.PRICEINFO;
+			}else if (mouseY > 600 && mouseY < 650) {
 				state = State.INVENTORY;
 			}else if (mouseY > 650) {
 				state = State.SHOP;
@@ -211,7 +295,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			    public void run() {
 			    	repaint();
 			        if (!paused) {
-			        	eventHandler.generateRandomEvent(10000);
+			        	eventHandler.generateRandomEvent(Ship.getEventChance());
 			        	ship.x += pathDataX[i];
 				        ship.y += pathDataY[i];
 			        	i += 1;
@@ -349,5 +433,9 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	
 	public static int getCurrentIsland() {
 		return currIsland;
+	}
+
+	public static void setGameOverImage(Image ngameOverImage) {
+		gameOverImage = ngameOverImage;
 	}
 }

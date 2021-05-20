@@ -8,6 +8,11 @@ public class Ship {
 	private static int hull = 100;
 	private static int repairPrice = 0;
 	private static int[] inventory = new int[7];
+	private static int repairModifier = 0;
+	private static int eventChance = 2000;
+	private static int selectedDays = 2000;
+	private static int fightingChance = 3;
+	private static double sellingModifier = 0;
 	
 	public Ship(int startX, int startY) {
 		x = startX;
@@ -15,11 +20,35 @@ public class Ship {
 	}
 	
 	public static void setRepairPrice() {
-		repairPrice = ((100 - hull)*30);
+		repairPrice = ((100 - hull)*(30 - repairModifier));
 	}
 	
 	public static int getRepairPrice() {
 		return repairPrice;
+	}
+	
+	public static int getProfit() {
+		return Math.max(0, money-5000);
+	}
+	
+	public static void setRepairModifier(int modifier) {
+		repairModifier = modifier;
+	}
+	
+	public static void setFightingChance(int chance) {
+		fightingChance = chance;
+	}
+	
+	public static int getFightingChance() {
+		return fightingChance;
+	}
+	
+	public static void setEventChance(int chance) {
+		eventChance = chance;
+	}
+	
+	public static int getEventChance() {
+		return eventChance;
 	}
 	
 	public static int getMoney() {
@@ -126,6 +155,7 @@ public class Ship {
 		}else {
 			if (inventoryEmpty()) {
 				GameLogic.state = State.GAMEOVER;
+				GameLogic.setGameOverImage(GameData.getGameOverMoney());
 			}else {
 				GameLogic.setEventImage(GameData.getRepairError());
 			}
@@ -139,5 +169,21 @@ public class Ship {
 			worth += inventory[i] * anchorPrices[i];
 		}
 		return worth;
+	}
+
+	public static int getSelectedDays() {
+		return selectedDays;
+	}
+
+	public static void setSelectedDays(int selectedDays) {
+		Ship.selectedDays = selectedDays;
+	}
+
+	public static double getSellingModifier() {
+		return sellingModifier;
+	}
+
+	public static void setSellingModifier(double sellingModifier) {
+		Ship.sellingModifier = sellingModifier;
 	}
 }

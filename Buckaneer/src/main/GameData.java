@@ -24,6 +24,9 @@ public class GameData {
 	private static Image noMoneyMessage = t.getImage("images/nomoney.jpg");
 	private static Image noSpaceMessage = t.getImage("images/bootytoobig.jpg");
 	private static Image noItemsMessage = t.getImage("images/noitems.jpg");
+	private static Image repairError = t.getImage("images/repairerror.jpg");
+	private static Image shopButton = t.getImage("images/shopbutton.jpg");
+	private static Image inventoryButton = t.getImage("images/inventory.jpg");
 	private static int[][] sellingData;
 	private static int[][] buyingData;
 	
@@ -108,5 +111,17 @@ public class GameData {
 
 	public static Image getNoItemsMessage() {
 		return noItemsMessage;
+	}
+
+	public static Image getRepairError() {
+		return repairError;
+	}
+
+	public static Image getShopButton() {
+		return shopButton;
+	}
+
+	public static Image getInventoryButton() {
+		return inventoryButton;
 	}
 }

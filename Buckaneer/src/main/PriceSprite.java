@@ -72,6 +72,49 @@ public class PriceSprite {
 		return returning;
 	}
 	
+	
+	
+	public static ArrayList<PriceSprite> constructInventoryText(){
+		ArrayList<PriceSprite> returning = new ArrayList<PriceSprite>();
+		ArrayList<String[]> shipLog = InventoryHandler.getPurchaseHistory();
+		//inventory and selling and buying
+		//System.out.println(shipLog.size());
+		for(int i=0; i<Ship.getInventory().length; i++) {
+			Image tempSprite = t.getImage("images/text/n" + Integer.toString(Ship.getInventory(i)) + ".png");
+			returning.add(new PriceSprite(tempSprite, 400, 260 + (53 * i)));
+			String[] itemData = shipLog.get(i);
+			String toDisplay;
+			for(int j=0;j<itemData.length;j++) {
+				toDisplay = itemData[j];
+				if (toDisplay != null) {
+					for (int k=0; k<toDisplay.length();k++) {
+						tempSprite = t.getImage("images/text/k" + toDisplay.charAt(k)+".png");
+						returning.add(new PriceSprite(tempSprite, 485 + (77 * i) + (6 * k), 240 + (25 * j)));
+					}
+				}
+			}
+		}
+		
+		
+		//money display
+		Image tempSprite;
+		returning.add(new PriceSprite(t.getImage("images/text/$.png"), 715, 110));
+		int[] money = Ship.moneyArray();
+		for (int i=0; i < money.length; i++) {
+			tempSprite = t.getImage("images/text/" + Integer.toString(money[i]) + ".png");
+			returning.add(new PriceSprite(tempSprite, 745 + (i * 30), 115));
+		}
+		//hull display
+		tempSprite = t.getImage("images/text/n" + Integer.toString((int) Math.floor(Ship.getHull() / 100)) + ".png");
+		returning.add(new PriceSprite(tempSprite, 540, 140));
+		int middleInt = (int) Math.floor((Ship.getHull() - (Math.floor(Ship.getHull()/100) * 100)) / 10);
+		tempSprite = t.getImage("images/text/n" + Integer.toString(middleInt) + ".png");
+		returning.add(new PriceSprite(tempSprite, 555, 140));
+		tempSprite = t.getImage("images/text/n" + Integer.toString(Ship.getHull()% 10) + ".png");
+		returning.add(new PriceSprite(tempSprite, 570, 140));
+		return returning;
+	}
+	
 	public Image getImage() {
 		return sprite;
 	}

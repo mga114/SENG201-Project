@@ -16,7 +16,7 @@ import java.util.TimerTask;
 import javax.swing.JPanel;
 
 public class GameLogic extends JPanel implements MouseListener, MouseMotionListener, KeyListener{
-	public State state;
+	public static State state;
 	private static int currIsland;
 	private int targetIsland;
 	private Toolkit t = Toolkit.getDefaultToolkit();
@@ -37,13 +37,11 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	
 	
 	public GameLogic() {
-		state = State.SHOP;
+		state = State.MAP;
 		GameData.setPrices();
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		//
-		Ship.setRepairPrice();
-		//
+		InventoryHandler.initPurchaseHistory();
 		addKeyListener(this);
 		setFocusable(true);
 		timeChanged();
@@ -66,18 +64,32 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			g.drawImage(dayCounter1, 1190, 30, this);
 			g.drawImage(dayCounter2, 1220, 30, this);
 			g.drawImage(eventImage, 490, 260, this);
+			g.drawImage(GameData.getInventoryButton(), 1155, 600, this);
+			g.drawImage(GameData.getShopButton(), 1155, 650, this);
 			g.dispose();
 			break;
 		case SHOP:
+			Ship.setRepairPrice();
 			g.setColor(new Color(173, 216, 230));
 			g.fillRect(0, 0, 1280, 720);
 			g.drawImage(background, 0, 0, this);
 			g.drawImage(t.getImage("images/shop (2).jpg"), 240, 60, this);
-			ArrayList<PriceSprite> priceSprites = getPriceSprites();
+			ArrayList<PriceSprite> priceSprites = PriceSprite.constructShopText();
 			for (PriceSprite sprite : priceSprites) {
 				g.drawImage(sprite.getImage(), sprite.getX(), sprite.getY(), this);
 			}
 			g.drawImage(eventImage, 490, 260, this);
+			g.dispose();
+			break;
+		case INVENTORY:
+			g.setColor(new Color(173, 216, 230));
+			g.fillRect(0, 0, 1280, 720);
+			g.drawImage(background, 0, 0, this);
+			g.drawImage(t.getImage("images/inventoryMenu.jpg"), 240, 60, this);
+			ArrayList<PriceSprite> invSprites = PriceSprite.constructInventoryText();
+			for (PriceSprite sprite : invSprites) {
+				g.drawImage(sprite.getImage(), sprite.getX(), sprite.getY(), this);
+			}
 			g.dispose();
 			break;
 		}
@@ -85,9 +97,6 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	}
 	@Override
 	public void mouseClicked(MouseEvent m) {
-		if(m.getButton() == MouseEvent.BUTTON3) {
-			state = State.MAP;
-		}
 	}
 
 	@Override
@@ -113,11 +122,16 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			}
 			repaint();
 			break;
+		case INVENTORY:
+			if (mouseX > 754 && mouseX < 1000 && mouseY > 539 && mouseY < 618) {
+				state = State.MAP;
+				repaint();
+			}
 		}
 	}
 	
 	public void mouseClickShopState(int mouseX, int mouseY) {
-		//System.out.println(mouseX + " " + mouseY); 
+		System.out.println(mouseX + " " + mouseY); 
 		//35 between top and bottom, 20 between buttons
 		int buttonNumClicked = -1;
 		if (mouseY > 253 && mouseY < 609) {
@@ -141,6 +155,9 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 				}
 			}
 		}
+		if (mouseX > 754 && mouseX < 1000 && mouseY > 539 && mouseY < 618) {
+			Ship.handleRepair();
+		}
 	}
 	
 	public void mouseClickMapState(int mouseX, int mouseY) {
@@ -160,7 +177,17 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 				currIsland = 2;
 			}
 		}
+		if (mouseX > 1155) {
+			if (mouseY > 600 && mouseY < 650) {
+				state = State.INVENTORY;
+			}else if (mouseY > 650) {
+				state = State.SHOP;
+			}
+		}
+		System.out.println(mouseX + " " + mouseY);
+		if(moved) {
 		moveShip(data.getPathDataX01(), data.getPathDataY01());
+		}
 		repaint();
 	}
 	
@@ -174,7 +201,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			    public void run() {
 			    	repaint();
 			        if (!paused) {
-			        	eventHandler.generateRandomEvent(700);
+			        	eventHandler.generateRandomEvent(1000);
 			        	ship.x += pathDataX[i];
 				        ship.y += pathDataY[i];
 			        	i += 1;
@@ -308,10 +335,6 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 
 	public static void setEventImage(Image eventImage) {
 		GameLogic.eventImage = eventImage;
-	}
-	
-	public ArrayList<PriceSprite> getPriceSprites(){
-		return PriceSprite.constructShopText();
 	}
 	
 	public static int getCurrentIsland() {

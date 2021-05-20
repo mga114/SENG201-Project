@@ -82,10 +82,21 @@ public class Ship {
 		inventory[pos] += value;
 	}
 	
+	public static boolean inventoryEmpty() {
+		for (int i=0; i < inventory.length; i++) {
+			if (inventory[i] > 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public static void handleSelling(int sellingID) {
 		if (getInventory(sellingID) != 0) {
-			changeMoney(GameData.getSellPrice(GameLogic.getCurrentIsland(), sellingID));
+			int cost = GameData.getSellPrice(GameLogic.getCurrentIsland(), sellingID);
+			changeMoney(cost);
 			changeInventory(sellingID, -1);
+			InventoryHandler.itemSold(sellingID, GameLogic.getCurrentIsland(), cost);
 		}else {
 			GameLogic.setEventImage(GameData.getNoItemsMessage());
 		}
@@ -94,8 +105,10 @@ public class Ship {
 	public static void handlePurchase(int purchaseID) {
 		if (money >= GameData.getBuyPrice(GameLogic.getCurrentIsland(), purchaseID)) {
 			if (getInventory(purchaseID) < 9) {
-			changeMoney(-GameData.getBuyPrice(GameLogic.getCurrentIsland(), purchaseID));
+			int cost = GameData.getBuyPrice(GameLogic.getCurrentIsland(), purchaseID);
+			changeMoney(-cost);
 			changeInventory(purchaseID, 1);
+			InventoryHandler.itemPurchased(purchaseID, GameLogic.getCurrentIsland(), cost);
 			}else {
 				GameLogic.setEventImage(GameData.getNoSpaceMessage());
 			}
@@ -103,5 +116,28 @@ public class Ship {
 		}else {
 			GameLogic.setEventImage(GameData.getNoMoneyMessage());
 		}
+	}
+	
+	public static void handleRepair() {
+		if(money >= repairPrice) {
+			hull = 100;
+			money -= repairPrice;
+			GameLogic.state = State.MAP;
+		}else {
+			if (inventoryEmpty()) {
+				GameLogic.state = State.GAMEOVER;
+			}else {
+				GameLogic.setEventImage(GameData.getRepairError());
+			}
+		}
+	}
+	
+	public static int inventoryWorth() {
+		int worth = 0;
+		int anchorPrices[] = { 150, 200, 300, 400, 500, 600, 800 };
+		for (int i=0; i < inventory.length; i++) {
+			worth += inventory[i] * anchorPrices[i];
+		}
+		return worth;
 	}
 }

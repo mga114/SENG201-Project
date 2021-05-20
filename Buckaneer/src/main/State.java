@@ -4,5 +4,7 @@ public enum State {
 	MAP,
 	MENU,
 	SHOP,
-	ATTACK
+	ATTACK,
+	GAMEOVER,
+	INVENTORY
 }

@@ -30,11 +30,21 @@ public class EventHandler {
 		while(!keyValid) {
 			keyValid = validKey(GameLogic.getCurrentChar());
 		}
-		System.out.println(numberPressed == (randSuccess + 1));
-		if (numberPressed == (randSuccess + 1)){
+		//RANDOM CHANGE ME PLS DADDY
+		if (random.nextInt(2) == 0) {
+			GameLogic.setEventImage(GameData.getPirateEventMessage3());
+		}else if (numberPressed == (randSuccess + 1)){
 			GameLogic.setEventImage(GameData.getPirateEventMessage3());
 		}else {
-			GameLogic.setEventImage(GameData.getPirateEventMessage2());
+			if (Ship.inventoryWorth() >= 1000) {
+				Ship.setInventory(new int[7]);
+				GameLogic.setEventImage(GameData.getPirateEventMessage2());
+			}else {
+				GameLogic.setEventImage(GameData.getPirateEventMessage2());
+				endEvent();
+				GameLogic.state = State.GAMEOVER;
+			}
+			
 		}
 		endEvent();
 	}
@@ -43,12 +53,14 @@ public class EventHandler {
 	public void weatherEvent() {
 		GameLogic.setPaused(true);
 		GameLogic.setEventImage(GameData.getWeatherEventMessage());
+		Ship.changeHull(-random.nextInt(30));
 		endEvent();
 	}
 	
 	public void abandonedShipEvent() {
 		GameLogic.setPaused(true);
 		GameLogic.setEventImage(GameData.getAbandonedShipMessage());
+		Ship.changeMoney(random.nextInt(500));
 		endEvent();
 	}
 	

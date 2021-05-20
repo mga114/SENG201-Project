@@ -41,6 +41,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 		GameData.setPrices();
 		addMouseListener(this);
 		addMouseMotionListener(this);
+		Path.constructPathMatrix();
 		InventoryHandler.initPurchaseHistory();
 		addKeyListener(this);
 		setFocusable(true);
@@ -58,6 +59,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			g.fillRect(0, 0, 1280, 720);
 			g.drawImage(background, 0, 0, this);
 			g.drawImage(currentDrawPath, 0, 0, this);
+			//g.drawImage(t.getImage("images/path3.png"), 0, 0, this);
 			g.drawImage(shipImage, ship.x, ship.y, this);
 			Image n = t.getImage("images/daysremaining.png");
 			g.drawImage(n, 900, 20, this);
@@ -109,7 +111,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	public void mousePressed(MouseEvent m) {
 		int mouseX = m.getX();
 		int mouseY = m.getY();
-		//System.out.println(mouseX + " " + mouseY);
+		System.out.println("x="+mouseX + " y=" + mouseY);
 		switch (state) {
 		case MAP:
 			mouseClickMapState(mouseX, mouseY);
@@ -131,7 +133,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	}
 	
 	public void mouseClickShopState(int mouseX, int mouseY) {
-		System.out.println(mouseX + " " + mouseY); 
+		//System.out.println(mouseX + " " + mouseY); 
 		//35 between top and bottom, 20 between buttons
 		int buttonNumClicked = -1;
 		if (mouseY > 253 && mouseY < 609) {
@@ -161,19 +163,27 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	}
 	
 	public void mouseClickMapState(int mouseX, int mouseY) {
+		int[] xPath = new int[0];
+		int[] yPath = new int[0];
 		if (data.getIslandButton0().pressed(mouseX, mouseY)) {
 			if (targetIsland != currIsland) {
 				moved = true;
+				xPath = Path.getXPath(currIsland, targetIsland);
+				yPath = Path.getYPath(currIsland, targetIsland);
 				currIsland = 0;
 			}
 		}else if (data.getIslandButton1().pressed(mouseX, mouseY)) {
 			if (targetIsland != currIsland) {
 				moved = true;
+				xPath = Path.getXPath(currIsland, targetIsland);
+				yPath = Path.getYPath(currIsland, targetIsland);
 				currIsland = 1;
 			}
 		}else if (data.getIslandButton2().pressed(mouseX, mouseY)) {
 			if (targetIsland != currIsland) {
 				moved = true;
+				xPath = Path.getXPath(currIsland, targetIsland);
+				yPath = Path.getYPath(currIsland, targetIsland);
 				currIsland = 2;
 			}
 		}
@@ -184,9 +194,9 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 				state = State.SHOP;
 			}
 		}
-		System.out.println(mouseX + " " + mouseY);
+		//System.out.println(mouseX + " " + mouseY);
 		if(moved) {
-		moveShip(data.getPathDataX01(), data.getPathDataY01());
+			moveShip(xPath, yPath);
 		}
 		repaint();
 	}
@@ -201,7 +211,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			    public void run() {
 			    	repaint();
 			        if (!paused) {
-			        	eventHandler.generateRandomEvent(1000);
+			        	eventHandler.generateRandomEvent(10000);
 			        	ship.x += pathDataX[i];
 				        ship.y += pathDataY[i];
 			        	i += 1;

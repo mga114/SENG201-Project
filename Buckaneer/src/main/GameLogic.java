@@ -100,9 +100,28 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 		case MAP:
 			mouseClickMapState(mouseX, mouseY);
 			break;
+		case SHOP:
+			mouseClickShopState(mouseX, mouseY);
+			repaint();
+			break;
 		}
 	}
 	
+	public void mouseClickShopState(int mouseX, int mouseY) {
+		//System.out.println(mouseX + " " + mouseY); 
+		//35 between top and bottom, 20 between buttons
+		int buttonNumClicked = -1;
+		if (mouseY > 253 && mouseY < 609) {
+			if (mouseX > 304 && mouseX < 373) {
+				for (int i=0; i < 7; i++) {
+					if(mouseY > (253 + i * 53) && mouseY < (288 + i * 53)) {
+						buttonNumClicked = i;
+					}
+				}
+				Ship.handlePurchase(buttonNumClicked);
+			}
+		}
+	}
 	
 	public void mouseClickMapState(int mouseX, int mouseY) {
 		if (data.getIslandButton0().pressed(mouseX, mouseY)) {

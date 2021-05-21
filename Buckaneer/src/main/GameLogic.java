@@ -29,7 +29,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 	private static boolean paused = false;
 	private boolean timerStart = false;
 	private EventHandler eventHandler = new EventHandler();
-	private int globalTime = 2000;
+	private static int globalTime = 2000;
 	private Image dayCounter1;
 	private Image dayCounter2;
 	private static char currentChar;
@@ -300,7 +300,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 				        ship.y += pathDataY[i];
 			        	i += 1;
 			        	if (i % 5 == 0) {
-			        		globalTime -= 1;
+			        		globalTime = Math.max(0, globalTime-1);
 			        		timeChanged();
 			        	}
 			        }
@@ -437,5 +437,9 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 
 	public static void setGameOverImage(Image ngameOverImage) {
 		gameOverImage = ngameOverImage;
+	}
+	
+	public static int getGlobalTime() {
+		return globalTime;
 	}
 }

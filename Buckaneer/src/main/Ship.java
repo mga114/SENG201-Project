@@ -148,7 +148,11 @@ public class Ship {
 	}
 	
 	public static void handleRepair() {
-		if(money >= repairPrice) {
+		System.out.println(GameLogic.getGlobalTime());
+		if(GameLogic.getGlobalTime() == 0) {
+			GameLogic.state = State.GAMEOVER;
+			GameLogic.setGameOverImage(GameData.getGameOverGood());
+		}else if(money >= repairPrice) {
 			hull = 100;
 			money -= repairPrice;
 			GameLogic.state = State.MAP;

@@ -26,13 +26,14 @@ public class GameData {
 	private static Image priceInfoButton = t.getImage("images/priceinfobutton.jpg");
 	private static Image gameOverMoney = t.getImage("images/gameovernomoney.png");
 	private static Image gameOverPirates = t.getImage("images/gameoverpirates.png");
+	private static Image gameOverGood = t.getImage("images/gameovergood.png");
 	private static int[][] sellingData;
 	private static int[][] buyingData;
 	
 	
 	public static void setPrices() {
 		sellingData = Rand.generatePrices();
-		buyingData = Rand.modifyPrices(sellingData, 0.3);
+		buyingData = Rand.modifyPrices(sellingData, 0.1);
 	}
 	
 	public static int getSellPrice(int island, int item) {
@@ -127,5 +128,9 @@ public class GameData {
 
 	public static Image getGameOverPirates() {
 		return gameOverPirates;
+	}
+
+	public static Image getGameOverGood() {
+		return gameOverGood;
 	}
 }

@@ -10,6 +10,7 @@ public class Ship {
 	private static int[] inventory = new int[7];
 	private static int repairModifier = 0;
 	private static int eventChance = 2000;
+	private static int eventModifier = 0;
 	private static int selectedDays = 2000;
 	private static int fightingChance = 3;
 	private static double sellingModifier = 0;
@@ -48,7 +49,7 @@ public class Ship {
 	}
 	
 	public static int getEventChance() {
-		return eventChance;
+		return eventChance + eventModifier;
 	}
 	
 	public static int getMoney() {
@@ -76,6 +77,10 @@ public class Ship {
 	
 	public static void changeHull(int nHull) {
 		hull += nHull;
+		if (hull <= 0) {
+			GameLogic.state = State.GAMEOVER;
+			
+		}
 	}
 	
 	public static int[] moneyArray() {
@@ -189,5 +194,13 @@ public class Ship {
 
 	public static void setSellingModifier(double sellingModifier) {
 		Ship.sellingModifier = sellingModifier;
+	}
+
+	public static int getEventModifier() {
+		return eventModifier;
+	}
+
+	public static void setEventModifier(int eventModifier) {
+		Ship.eventModifier = eventModifier;
 	}
 }

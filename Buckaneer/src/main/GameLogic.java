@@ -66,6 +66,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 			//g.drawImage(t.getImage("images/path3.png"), 0, 0, this);
 			g.drawImage(shipImage, ship.x, ship.y, this);
 			Image n = t.getImage("images/daysremaining.png");
+			//g.drawImage(data.getPath34(), 0, 0, this);
 			g.drawImage(n, 900, 20, this);
 			g.drawImage(dayCounter1, 1190, 30, this);
 			g.drawImage(dayCounter2, 1220, 30, this);
@@ -113,6 +114,10 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 		case GAMEOVER:
 			g.drawImage(t.getImage("images/gameover.jpg"), 0, -20, this);
 			g.drawImage(gameOverImage, 0, 0, this);
+			ArrayList<PriceSprite> gOSprites = PriceSprite.getGameOverText();
+			for(PriceSprite sprite : gOSprites) {
+				g.drawImage(sprite.getImage(), sprite.getX(), sprite.getY(), this);
+			}
 			g.dispose();
 			break;
 		}
@@ -250,6 +255,7 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 		if (data.getIslandButton0().pressed(mouseX, mouseY)) {
 			if (targetIsland != currIsland) {
 				moved = true;
+				Ship.setEventModifier(mouseY);
 				xPath = Path.getXPath(currIsland, targetIsland);
 				yPath = Path.getYPath(currIsland, targetIsland);
 				currIsland = 0;
@@ -267,6 +273,20 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 				xPath = Path.getXPath(currIsland, targetIsland);
 				yPath = Path.getYPath(currIsland, targetIsland);
 				currIsland = 2;
+			}
+		}else if (data.getIslandButton3().pressed(mouseX, mouseY)) {
+			if (targetIsland != currIsland) {
+				moved = true;
+				xPath = Path.getXPath(currIsland, targetIsland);
+				yPath = Path.getYPath(currIsland, targetIsland);
+				currIsland = 3;
+			}
+		}else if (data.getIslandButton4().pressed(mouseX, mouseY)) {
+			if (targetIsland != currIsland) {
+				moved = true;
+				xPath = Path.getXPath(currIsland, targetIsland);
+				yPath = Path.getYPath(currIsland, targetIsland);
+				currIsland = 4;
 			}
 		}
 		if (mouseX > 1155) {
@@ -338,6 +358,10 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 				mouseOverIsland1();
 			}else if (data.getIslandButton2().pressed(mouseX, mouseY)) {
 				mouseOverIsland2();
+			}else if(data.getIslandButton3().pressed(mouseX, mouseY)) {
+				mouseOverIsland3();
+			}else if(data.getIslandButton4().pressed(mouseX, mouseY)) {
+				mouseOverIsland4();
 			}else {
 				handleMouseMoveEmpty();
 			}
@@ -360,18 +384,26 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 				currentDrawPath = data.getPath01();
 			} else if (currIsland == 2) {
 				currentDrawPath = data.getPath02();
+			} else if (currIsland == 3) {
+				currentDrawPath = data.getPath03();
+			} else if (currIsland == 4) {
+				currentDrawPath = data.getPath04();
 			}
 		}
 	}
 	
 	public void mouseOverIsland1() {
 		if (!moved) {
-		targetIsland = 1;
-		if (currIsland == 0) {
-			currentDrawPath = data.getPath01();
-		} else if (currIsland == 2) {
-			currentDrawPath = data.getPath12();
-		}
+			targetIsland = 1;
+			if (currIsland == 0) {
+				currentDrawPath = data.getPath01();
+			} else if (currIsland == 2) {
+				currentDrawPath = data.getPath12();
+			} else if(currIsland == 3) {
+				currentDrawPath = data.getPath13();
+			} else if (currIsland == 4) {
+				currentDrawPath = data.getPath14();
+			}
 		}
 	}
 	
@@ -382,6 +414,40 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 				currentDrawPath = data.getPath02();
 			} else if (currIsland == 1) {
 				currentDrawPath = data.getPath12();
+			} else if (currIsland == 3) {
+				currentDrawPath = data.getPath23();
+			} else if (currIsland == 4) {
+				currentDrawPath = data.getPath24();
+			}
+		}
+	}
+	
+	public void mouseOverIsland3() {
+		if(!moved) {
+			targetIsland = 3;
+			if(currIsland == 0) {
+				currentDrawPath = data.getPath03();
+			}else if (currIsland == 1) {
+				currentDrawPath = data.getPath13();
+			}else if (currIsland == 2) {
+				currentDrawPath = data.getPath23();
+			}else if (currIsland == 4) {
+				currentDrawPath = data.getPath34();
+			}
+		}
+	}
+	
+	public void mouseOverIsland4() {
+		if(!moved) {
+			targetIsland = 4;
+			if(currIsland == 0) {
+				currentDrawPath = data.getPath04();
+			}else if (currIsland == 1) {
+				currentDrawPath = data.getPath14();
+			}else if (currIsland == 2) {
+				currentDrawPath = data.getPath24();
+			}else if (currIsland == 3) {
+				currentDrawPath = data.getPath34();
 			}
 		}
 	}

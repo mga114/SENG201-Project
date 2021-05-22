@@ -143,6 +143,46 @@ public class PriceSprite {
 		return returning;
 	}
 	
+	
+	public static ArrayList<PriceSprite> getGameOverText(){
+		ArrayList<PriceSprite> returning = new ArrayList<PriceSprite>();
+		//selected days display
+		int selectedDays = (int) Math.ceil(Ship.getSelectedDays() / 100);
+		int day1 = selectedDays % 10;
+		int day2 = (int) Math.floor(selectedDays / 10);
+		Image tempSprite = t.getImage("images/text/n" + Integer.toString(day2) + ".png");
+		returning.add(new PriceSprite(tempSprite, 230, 400));
+		tempSprite = t.getImage("images/text/n" + Integer.toString(day1) + ".png");
+		returning.add(new PriceSprite(tempSprite, 245, 400));
+		//days played
+		int daysPlayed = (int) Math.ceil((Ship.getSelectedDays() - GameLogic.getGlobalTime())/100);
+		day1 = daysPlayed % 10;
+		day2 = (int) Math.floor(daysPlayed / 10);
+		tempSprite = t.getImage("images/text/n" + Integer.toString(day2) + ".png");
+		returning.add(new PriceSprite(tempSprite, 570, 400));
+		tempSprite = t.getImage("images/text/n" + Integer.toString(day1) + ".png");
+		returning.add(new PriceSprite(tempSprite, 585, 400));
+		//profit
+		String profitString = Integer.toString(Ship.getProfit());
+		while(profitString.length() < 8) {
+			profitString = "0" + profitString;
+		}
+		for(int i=0; i<profitString.length();i++) {
+			tempSprite = t.getImage("images/text/n" + profitString.charAt(i) + ".png");
+			returning.add(new PriceSprite(tempSprite, 825 + (15 * i), 400));
+		}
+		int score = Math.min(((Ship.getSelectedDays() - GameLogic.getGlobalTime()) * 2) + Ship.getProfit(), 99999999);
+		String scoreString = Integer.toString(score);
+		while (scoreString.length() < 8) {
+			scoreString = "0" + scoreString;
+		}
+		for(int i=0;i<scoreString.length();i++) {
+			tempSprite = t.getImage("images/text/n" + scoreString.charAt(i) + ".png");
+			returning.add(new PriceSprite(tempSprite, 1050 + (15*i), 400));
+		}
+		return returning;
+	}
+	
 	public Image getImage() {
 		return sprite;
 	}

@@ -5,13 +5,22 @@ import java.awt.Toolkit;
 
 public class GameData {
 	private static Toolkit t = Toolkit.getDefaultToolkit();
-	private Image path01 = t.getImage("images/path1.png");
-	private Image path12 = t.getImage("images/path2.png");
-	private Image path02 = t.getImage("images/path3.png");
+	private Image path01 = t.getImage("images/paths/path01.png");
+	private Image path02 = t.getImage("images/paths/path02.png");
+	private Image path03 = t.getImage("images/paths/path03.png");
+	private Image path04 = t.getImage("images/paths/path04.png");
+	private Image path12 = t.getImage("images/paths/path12.png");
+	private Image path13 = t.getImage("images/paths/path13.png");
+	private Image path14 = t.getImage("images/paths/path14.png");
+	private Image path23 = t.getImage("images/paths/path23.png");
+	private Image path24 = t.getImage("images/paths/path24.png");
+	private Image path34 = t.getImage("images/paths/path34.png");
 	private static Image empty = t.getImage("images/empty.png");
 	private Button islandButton0 = new Button(10, 150, 370, 500);
 	private Button islandButton1 = new Button(440, 570, 290, 370);
 	private Button islandButton2 = new Button(330, 580, 500, 640);
+	private Button islandButton3 = new Button(750, 872, 290, 350);
+	private Button islandButton4 = new Button(732, 891, 444, 514);
 	private static Image pirateEventMessage1 = t.getImage("images/piratemessage.jpg");
 	private static Image pirateEventMessage2 = t.getImage("images/piratemessage2.jpg");
 	private static Image pirateEventMessage3 = t.getImage("images/piratemessage3.jpg");
@@ -27,6 +36,7 @@ public class GameData {
 	private static Image gameOverMoney = t.getImage("images/gameovernomoney.png");
 	private static Image gameOverPirates = t.getImage("images/gameoverpirates.png");
 	private static Image gameOverGood = t.getImage("images/gameovergood.png");
+	private static Image gameOverHull = t.getImage("images/gameoverhull.png");
 	private static int[][] sellingData;
 	private static int[][] buyingData;
 	
@@ -132,5 +142,45 @@ public class GameData {
 
 	public static Image getGameOverGood() {
 		return gameOverGood;
+	}
+
+	public static Image getGameOverHull() {
+		return gameOverHull;
+	}
+
+	public Image getPath03() {
+		return path03;
+	}
+
+	public Image getPath04() {
+		return path04;
+	}
+
+	public Image getPath13() {
+		return path13;
+	}
+
+	public Image getPath14() {
+		return path14;
+	}
+
+	public Image getPath23() {
+		return path23;
+	}
+
+	public Image getPath24() {
+		return path24;
+	}
+
+	public Image getPath34() {
+		return path34;
+	}
+
+	public Button getIslandButton3() {
+		return islandButton3;
+	}
+
+	public Button getIslandButton4() {
+		return islandButton4;
 	}
 }

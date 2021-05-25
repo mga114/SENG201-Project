@@ -183,6 +183,17 @@ public class PriceSprite {
 		return returning;
 	}
 	
+	public static ArrayList<PriceSprite> drawShipName(){
+		String name = KeyboardInterface.getShipName();
+		ArrayList<PriceSprite> returning = new ArrayList<PriceSprite>();
+		Image tempSprite;
+		for(int i=0; i < name.length(); i++) {
+			tempSprite = t.getImage("images/chars/" + name.charAt(i) + ".png");
+			returning.add(new PriceSprite(tempSprite, 460 + (i*15), 160));
+		}
+		return returning;
+	}
+	
 	public Image getImage() {
 		return sprite;
 	}

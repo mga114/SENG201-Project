@@ -56,6 +56,10 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 		switch(state) {
 		case MENU:
 			g.drawImage(t.getImage("images/mainmenu.jpg"), 0, 0, this);
+			ArrayList<PriceSprite> mSprites = PriceSprite.drawShipName();
+			for (PriceSprite sprite : mSprites) {
+				g.drawImage(sprite.getImage(), sprite.getX(), sprite.getY(), this);
+			}
 			g.dispose();
 			break;
 		case MAP:
@@ -476,7 +480,14 @@ public class GameLogic extends JPanel implements MouseListener, MouseMotionListe
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		setCurrentChar(e.getKeyChar());
+		switch(state) {
+		case MAP:
+			setCurrentChar(e.getKeyChar());
+			break;
+		case MENU:
+			KeyboardInterface.handleInput(e.getKeyChar());
+			break;
+		}
 	}
 
 	@Override
